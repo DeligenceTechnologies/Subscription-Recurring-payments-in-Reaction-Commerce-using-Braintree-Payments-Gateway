@@ -1,0 +1,32 @@
+[{
+  "language": "English",
+  "i18n": "en",
+  "ns": "reaction-braintree-subscription",
+  "translation": {
+    "reaction-subscription-payments": {
+      "admin": {
+        "shortcut": {
+          "braintreeLabel": "Braintree1",
+          "braintreeTitle": "Braintree2"
+        },
+        "dashboard": {
+          "braintreeLabel": "Braintree3",
+          "braintreeTitle": "Braintree4",
+          "braintreeDescription": "Braintree payments5"
+        },
+        "paymentSettings": {
+          "braintreeLabel": "Braintree6",
+          "braintreeSettingsLabel": "Braintree7",
+          "braintreeCredentials": "Add credentials to enable8"
+        }
+      },
+      "order": {
+        "paymentProvider": {
+          "braintree": {
+            "braintreeSettlementDelay": "Braintree does not allow refunds until transactions are settled. This can take up to 24 hours. Please try again later9999."
+          }
+        }
+      }
+    }
+  }
+}]
