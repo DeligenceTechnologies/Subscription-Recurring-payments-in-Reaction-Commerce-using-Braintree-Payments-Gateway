@@ -107,9 +107,9 @@ function createSubscrioptionInBrainTree(paymentSubmitDetails){
 
   const fut = new Future();
 
-  gateway.plan.all(Meteor.bindEnvironment(function(err, result) { 
+  gateway.plan.all(Meteor.bindEnvironment(function(err, result) {
     //console.log(result.plans[0].id);
-    if(result.plans[0].id){
+    if(result.plans && result.plans.length && result.plans[0].id){
       let plan=result.plans[0].id;
       gateway.customer.create({
 
@@ -118,49 +118,49 @@ function createSubscrioptionInBrainTree(paymentSubmitDetails){
         creditCard: paymentObj.creditCard
 
       },function (err, result) {
-          //console.log(result.customer.id);
-          //console.log(result.customer.paymentMethods[0].token);
-          if(result.customer.paymentMethods[0].token){
+        //console.log(result.customer.id);
+        //console.log(result.customer.paymentMethods[0].token);
+        if(result.customer.paymentMethods[0].token){
 
-              gateway.subscription.create({
-                  paymentMethodToken: result.customer.paymentMethods[0].token,
-                  planId: plan,
-                  //trialDuration: 0,
-                  price : paymentObj.amount,
-              },(error, result) => {
-                  if(result.success){
-                    Logger.info("Subscription is created successfully");
-                  }
-                  if (error) {
-                    fut.return({
-                      saved: false,
-                      paymentType : paymentSubmitDetails.paymentType,
-                      error
-                    });
-                  } else if (!result.success) {
-                    fut.return({
-                      saved: false,
-                      paymentType : paymentSubmitDetails.paymentType,
-                      response: result
-                    });
-                  } else {
-                    //console.log(result);
-                    fut.return({
-                      saved: true,
-                      paymentType : paymentSubmitDetails.paymentType,
-                      response: result
-                    });
-                  }
-                  
+          gateway.subscription.create({
+            paymentMethodToken: result.customer.paymentMethods[0].token,
+            planId: plan,
+            //trialDuration: 0,
+            price : paymentObj.amount,
+          },(error, result) => {
+            if(result.success){
+              Logger.info("Subscription is created successfully");
+            }
+            if (error) {
+              fut.return({
+                saved: false,
+                paymentType : paymentSubmitDetails.paymentType,
+                error
               });
-          }  
+            } else if (!result.success) {
+              fut.return({
+                saved: false,
+                paymentType : paymentSubmitDetails.paymentType,
+                response: result
+              });
+            } else {
+              //console.log(result);
+              fut.return({
+                saved: true,
+                paymentType : paymentSubmitDetails.paymentType,
+                response: result
+              });
+            }
+
+          });
+        }
       });
     }
   },(error) => {
-    Reaction.Events.warn(error);
+    Logger.error("error-processing-subscription-payment", error);
   }));
   return fut.wait();
-};
+}
 
 // Create one time payment in brainTree
 
@@ -217,7 +217,7 @@ BraintreeSubsApi.apiCall.paymentSubmit = function (paymentSubmitDetails) {
 
     return createSubscrioptionInBrainTree(paymentSubmitDetails);
 
-  }  
+  }
 };
 
 

@@ -1,4 +1,6 @@
-import { SimpleSchema } from "meteor/aldeed:simple-schema";
+import SimpleSchema from "simpl-schema";
+import { check } from "meteor/check";
+import { Tracker } from "meteor/tracker";
 import { PackageConfig } from "/lib/collections/schemas/registry";
 import { registerSchema } from "@reactioncommerce/reaction-collections";
 
@@ -11,10 +13,7 @@ import { registerSchema } from "@reactioncommerce/reaction-collections";
  *    private_key: ""
  *  see: https://developers.braintreepayments.com/javascript+node/reference
  */
-
-export const BraintreeSubscriptionPackageConfig = new SimpleSchema([
-  PackageConfig,
-  {
+export const BraintreeSubscriptionPackageConfig = PackageConfig.clone().extend({
     "settings.mode": {
       type: Boolean,
       defaultValue: false
@@ -43,7 +42,7 @@ export const BraintreeSubscriptionPackageConfig = new SimpleSchema([
       allowedValues: ["Authorize", "De-authorize", "Capture", "Refund"]
     }
   }
-]);
+);
 
 registerSchema("BraintreeSubscriptionPackageConfig", BraintreeSubscriptionPackageConfig);
 
@@ -73,6 +72,6 @@ export const BraintreeSubscriptionPayment = new SimpleSchema({
     max: 4,
     label: "CVV"
   }
-});
+}, { check, tracker: Tracker });
 
 registerSchema("BraintreeSubscriptionPayment", BraintreeSubscriptionPayment);
